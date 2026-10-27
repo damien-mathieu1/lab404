@@ -18,12 +18,48 @@ spec:
         app.kubernetes.io/component: proxy
         app.kubernetes.io/part-of: lab404
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
+        # Lets the non-root master bind port 80 without any capability; this
+        # sysctl is namespaced to the Pod and allowed by the restricted profile.
+        sysctls:
+          - name: net.ipv4.ip_unprivileged_port_start
+            value: "80"
       containers:
         - name: nginx
           image: nginx:latest@sha256:4c41e2d0a3a55b325ed572cd0200bdb72af1433c3daa2bca6ef8eea68ce504a2
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+          volumeMounts:
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: run
+              mountPath: /run
           ports:
             - name: http
               containerPort: 80
+      volumes:
+        - name: cache
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: run
+          emptyDir:
+            sizeLimit: 1Mi
 ---
 apiVersion: v1
 kind: Service
