@@ -5,8 +5,10 @@ resources:
 images:
   - name: ghcr.io/leofvo/lab404-web
     newName: ghcr.io/damien-mathieu1/lab404-web
-    newTag: latest
+    # Signed index from images.yml@refs/heads/main, commit 81b1b91.
+    digest: sha256:6abe091645c8705f6efa21312a791b3ba58a77bc420f38d694f7496df8bd274a
   - name: ghcr.io/leofvo/lab404-votes
     newName: ghcr.io/damien-mathieu1/lab404-votes
-    newTag: latest
+    # Signed index from images.yml@refs/heads/main, commit 81b1b91.
+    digest: sha256:1537d60991d8fc25026771f8fd024b65c21067c09cd75f608af94b03b9f7dfe4
 
