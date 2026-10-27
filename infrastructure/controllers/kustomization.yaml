@@ -26,3 +26,19 @@ helmCharts:
     releaseName: otel-collector
     namespace: observability
     valuesFile: opentelemetry-values.yaml
+  - name: kyverno
+    repo: https://kyverno.github.io/kyverno
+    version: 3.9.1
+    releaseName: kyverno
+    namespace: kyverno
+    includeCRDs: true
+    # Helm test hooks use readiness-checker:latest and are not platform workloads.
+    skipTests: true
+    # Kustomize renders Helm hooks as plain resources: the pre-delete hooks would
+    # scale Kyverno to zero and remove its webhooks on every apply.
+    valuesInline:
+      webhooksCleanup:
+        enabled: false
+      crds:
+        migration:
+          enabled: false
