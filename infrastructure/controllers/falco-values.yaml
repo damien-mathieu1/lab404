@@ -1,0 +1,33 @@
+driver:
+  kind: modern_ebpf
+  modernEbpf:
+    # BPF, PERFMON, SYS_RESOURCE and SYS_PTRACE instead of a privileged container.
+    leastPrivileged: true
+
+tolerations:
+  # Chart defaults, restated because setting tolerations replaces them.
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+  # lab404-worker2 runs Valkey and is tainted for stateful workloads only.
+  - effect: NoSchedule
+    key: workload
+    operator: Equal
+    value: stateful
+
+falco:
+  json_output: true
+  # Rules are pinned and never hot-reloaded; Kind nodes share the host kernel's
+  # inotify instance limit, which the config watcher otherwise exhausts.
+  watch_config_files: false
+
+falcoctl:
+  artifact:
+    # Deterministic rules: install one pinned version and never update at runtime.
+    follow:
+      enabled: false
+  config:
+    artifact:
+      install:
+        refs: [falco-rules:5.2.0]

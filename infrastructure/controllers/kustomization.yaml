@@ -51,3 +51,9 @@ helmCharts:
     valuesInline:
       # The name and namespace kubeseal looks for by default.
       fullnameOverride: sealed-secrets-controller
+  - name: falco
+    repo: https://falcosecurity.github.io/charts
+    version: 9.2.0
+    releaseName: falco
+    namespace: falco
+    valuesFile: falco-values.yaml
